@@ -1,0 +1,117 @@
+\documentclass[10pt, a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{xcolor}
+
+% Link Color
+\definecolor{linkblue}{HTML}{0000FF}
+\hypersetup{
+    colorlinks=true,
+    urlcolor=linkblue,
+}
+
+% Formatting - Reduced margins to maximize content space
+\geometry{left=0.4in, top=0.3in, right=0.4in, bottom=0.3in}
+\urlstyle{same}
+\pagestyle{empty}
+
+% ---- Layout Controls ----
+\flushbottom  % Stretch content to fill entire page height
+\setlength{\parskip}{1pt plus 8pt minus 1pt}  % Increased stretchability to fill white space
+\setlength{\parsep}{0pt}
+\setlength{\parindent}{0pt}
+\linespread{1.0}
+
+% ---- Section Formatting ----
+\titleformat{\section}{
+  \bfseries\raggedright\large
+}{}{0em}{}[\titlerule]
+
+\titlespacing*{\section}
+{0pt}{8pt plus 6pt minus 2pt}{4pt plus 4pt minus 1pt}  % Increased stretchability to fill white space
+
+% ---- Bullet points ----
+\renewcommand\labelitemi{$\circ$}
+\setlist[itemize]{topsep=2pt plus 4pt, partopsep=0pt, parsep=0pt, itemsep=2pt plus 3pt minus 1pt}  % Increased stretchability to fill white space 
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    {\Huge \textbf{\VAR{name}}} \\[6pt]
+    \footnotesize 
+    \BLOCK{if linkedin} \href{\VAR{linkedin}}{\textcolor{black}{LinkedIn}} \BLOCK{endif}
+    \BLOCK{if github} -- \href{\VAR{github}}{\textcolor{black}{GitHub}} \BLOCK{endif}
+    \BLOCK{if phone} -- \VAR{phone} \BLOCK{endif}
+    \BLOCK{if email} -- \href{mailto:\VAR{email}}{\textcolor{black}{\VAR{email}}} \BLOCK{endif}
+    \BLOCK{if location} -- \VAR{location} \BLOCK{endif}
+\end{center}
+\vspace{-8pt}
+
+%-----------SUMMARY-----------
+\section{Summary}
+\VAR{summary}
+
+%-----------EXPERIENCE-----------
+\BLOCK{if experience}
+\section{Work Experience}
+\BLOCK{for exp in experience}
+    \begin{tabular*}{\textwidth}[t]{@{}l@{\extracolsep{\fill}}r@{}}
+      \textbf{\VAR{exp.role}, \VAR{exp.company}} & \VAR{exp.duration} \\
+    \end{tabular*}\vspace{3pt plus 6pt minus 1pt}  % Increased stretchability to fill white space
+    \begin{itemize}[leftmargin=0.15in]
+        \BLOCK{for highlight in exp.highlights}
+        \item \VAR{highlight}
+        \BLOCK{endfor}
+    \end{itemize}
+    \vspace{2pt plus 6pt minus 1pt}  % Increased stretchability to fill white space
+\BLOCK{endfor}
+\BLOCK{endif}
+
+%-----------SKILLS-----------
+\BLOCK{if skills and skills|length > 0}
+\section{Skills}
+\begin{itemize}[leftmargin=0.15in, label={}]
+    \BLOCK{for category, sks in skills.items()}
+    \BLOCK{if sks and sks|length > 0}
+    \item \textbf{\VAR{category}}: \VAR{", ".join(sks)}
+    \BLOCK{endif}
+    \BLOCK{endfor}
+\end{itemize}
+\BLOCK{endif}
+
+%-----------PROJECTS-----------
+\BLOCK{if projects}
+\section{Projects}
+\BLOCK{for proj in projects}
+    \textbf{\VAR{proj.name}} \BLOCK{if proj.link} $|$ \href{\VAR{proj.link}}{\underline{GitHub Link}} \BLOCK{endif}
+    \begin{itemize}[leftmargin=0.15in]
+        \BLOCK{for desc in proj.description}
+        \item \VAR{desc}
+        \BLOCK{endfor}
+    \end{itemize}
+\BLOCK{endfor}
+\BLOCK{endif}
+
+%-----------EDUCATION-----------
+\BLOCK{if education}
+\section{Education}
+\begin{itemize}[leftmargin=0.15in]
+\BLOCK{for edu in education}
+    \item 
+    \begin{tabular*}{\textwidth}[t]{@{}l@{\extracolsep{\fill}}r@{}}
+      \textbf{\VAR{edu.institution}}: \VAR{edu.degree} & \VAR{edu.year} \\
+    \end{tabular*}
+\BLOCK{endfor}
+\end{itemize}
+\BLOCK{endif}
+
+% CRITICAL: Push all content to bottom to eliminate white space
+\vfill
+
+\end{document}
